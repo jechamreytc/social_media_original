@@ -1,0 +1,12 @@
+.black-bg {
+  background-color: black;
+  color: white;
+}
+
+.white-bg {
+  background-color: white;
+  color: black;
+}
+body{
+  background-color: black;
+}
