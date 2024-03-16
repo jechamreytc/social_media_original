@@ -86,8 +86,7 @@ function Login() {
                         </div>
                         <Form noValidate validated={validated} onSubmit={handleSubmit} >
                             <div className=''>
-                                <FloatingLabel label='Username :' className='mt-3'>
-
+                                <FloatingLabel label='Username' className='mt-3'>
                                     <Form.Control
                                         type='text'
                                         placeholder='Enter your Username'
@@ -99,7 +98,7 @@ function Login() {
                             </div>
                             <Form.Group>
                                 <div className=''>
-                                    <FloatingLabel label='Password :' className='mt-3'>
+                                    <FloatingLabel label='Password' className='mt-3'>
                                         <Form.Control
                                             type='Password'
                                             placeholder='Enter your Password'
@@ -121,7 +120,6 @@ function Login() {
                                 <div className='mx-4'>or</div>
                                 <div className='w-1/3 border-t border-white'></div>
                             </div>
-
                             <Button as={Link} to="/signup" className='w-44 bg-white text-black'>Sign Up</Button>
                         </div>
                     </Container>

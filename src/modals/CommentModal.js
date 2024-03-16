@@ -27,10 +27,9 @@ function CommentModal({ show, onHide, post_id }) {
 
         try {
             const response = await axios.post(url, formData);
-            console.log("Comment Successfully", response.data);
             if (response.data === 1) {
                 getComments();
-                setNewComment('');
+                setNewComment(''); // Clear input field after successful comment submission
             }
         } catch (error) {
             console.error("Error Commenting", error);
@@ -53,7 +52,6 @@ function CommentModal({ show, onHide, post_id }) {
             formData.append("json", JSON.stringify(jsonData));
             formData.append("operation", "getComments");
             const res = await axios.post(url, formData);
-            console.log("res.data sa comment: ", JSON.stringify(res.data));
             if (res.data !== 0) {
                 setComments(res.data);
             }
@@ -78,7 +76,6 @@ function CommentModal({ show, onHide, post_id }) {
                 onHide();
             }
         };
-
         document.addEventListener('mousedown', handleClickOutside);
 
         return () => {
@@ -87,7 +84,6 @@ function CommentModal({ show, onHide, post_id }) {
     }, [onHide]);
 
     return (
-
         <Modal
             show={show}
             onHide={handleOnHide}
@@ -102,74 +98,54 @@ function CommentModal({ show, onHide, post_id }) {
                 </Modal.Header>
                 {isLoading ? (
                     <LoadingSpinner />
-                ) : (<Modal.Body>
-                    <div>
-                        <Card>
-                            <Card.Body>
-                                <Form noValidate validated={validated}>
-                                    <Form.Group>
-                                        <Container>
-                                            <div className='flex gap-2 flex-wrap'>
-                                                {showAllComments ? (
-                                                    comments.map((comment, index) => (
+                ) : (
+                    <Modal.Body>
+                        <div>
+                            <Card>
+                                <Card.Body>
+                                    <Form noValidate validated={validated}>
+                                        <Form.Group>
+                                            <Container>
+                                                <div className='flex gap-2 flex-wrap'>
+                                                    {comments.map((comment, index) => (
                                                         <div key={index} className="w-full">
-                                                            <div className='flex gap-3'>
+                                                            <div className='flex gap-3 w-full'>
                                                                 <Image
                                                                     style={{ maxWidth: 40, maxHeight: 40, minHeight: 30, minWidth: 15 }}
-                                                                    className='w-full'
                                                                     src={secureLocalStorage.getItem("url") + "images/" + comment.user_profile_picture}
                                                                     rounded
                                                                 />
-                                                                <p><b>{comment.user_fullname}</b></p>
-                                                            </div>
-                                                            <div className='ml-14'>
-                                                                <p>{comment.usercoms_comments}</p>
-                                                            </div>
-                                                        </div>
-                                                    ))
-                                                ) : (
-                                                    comments.slice(5).map((comment, index) => (
-                                                        <div key={index} className="w-full">
-                                                            <div className='flex gap-3'>
-                                                                <Image
-                                                                    style={{ maxWidth: 40, maxHeight: 40, minHeight: 30, minWidth: 15 }}
-                                                                    className='w-full'
-                                                                    src={secureLocalStorage.getItem("url") + "images/" + comment.user_profile_picture}
-                                                                    rounded
-                                                                />
-                                                                <p><b>{comment.user_fullname}</b></p>
-                                                            </div>
-                                                            <div className='ml-14'>
-                                                                <p>{comment.usercoms_comments}</p>
+                                                                <div>
+                                                                    <p><b>{comment.user_fullname}</b></p>
+                                                                    <p>{comment.usercoms_comments}</p>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    ))
-                                                )}
-                                            </div>
-                                        </Container>
-                                    </Form.Group>
-                                </Form>
-                                {!showAllComments && comments.length > 5 && (
-                                    <div className='text-center'>
-                                        <Button className='bg-black text-white' onClick={() => setShowAllComments(true)}>Show More</Button>
-                                    </div>
-                                )}
-                            </Card.Body>
-                        </Card>
-                    </div>
-                    <div className='md:flex'>
-                        <input
-                            type="text"
-                            placeholder='Comment'
-                            className="outline-none rounded-md w-full h-[50px] md:mt-3"
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                        />
-                        <LuSendHorizonal className='size-6 mt-3 cursor-pointer' onClick={postComment} />
-                    </div>
-                </Modal.Body>
+                                                    ))}
+                                                </div>
+                                            </Container>
+                                        </Form.Group>
+                                    </Form>
+                                    {!showAllComments && comments.length > 5 && (
+                                        <div className='text-center'>
+                                            <Button className='bg-black text-white' onClick={() => setShowAllComments(true)}>Show More</Button>
+                                        </div>
+                                    )}
+                                </Card.Body>
+                            </Card>
+                        </div>
+                        <div className='md:flex'>
+                            <input
+                                type="text"
+                                placeholder='Comment'
+                                className="outline-none rounded-md w-full h-[50px] md:mt-3"
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                            />
+                            <LuSendHorizonal className='size-6 mt-3 cursor-pointer' onClick={postComment} />
+                        </div>
+                    </Modal.Body>
                 )}
-
             </div>
         </Modal>
     );

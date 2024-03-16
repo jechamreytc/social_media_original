@@ -7,27 +7,18 @@ import secureLocalStorage from 'react-secure-storage';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { FaCamera } from "react-icons/fa";
 import { CiImageOn } from "react-icons/ci";
-import CameraModals from '../modals/CameraModals';
+import TakePicture from '../components/TakePicture';
 
 function UpdateProfile({ show, onHide }) {
     const [validated, setValidated] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [imageSelected, setImageSelected] = useState(false);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [userName, setUsername] = useState('');
-    const [userPassword, setUserPassword] = useState('');
-    const [userFullname, setUserFullname] = useState('');
+    const [imagePreview, setImagePreview] = useState(localStorage.getItem("user_profile_picture"));
     const [userImage, setUserImage] = useState(null);
     const [profilePicture, setProfilePicture] = useState(localStorage.getItem("user_profile_picture"));
-    const [userFullNameLabel, setUserFullNameLabel] = useState(localStorage.getItem("user_fullname"));
-    const [userNameLabel, setUserNameLabel] = useState(localStorage.getItem("user_username"));
-    const [userPasswordLabel, setUserPasswordLabel] = useState(localStorage.getItem("user_password"));
     const [showCameraModal, setShowCameraModal] = useState(false);
 
-
     const user_profile_image = secureLocalStorage.getItem("url") + 'images/' + profilePicture;
-
-
 
     const handleOnHide = () => {
         setImagePreview(null);
@@ -49,7 +40,6 @@ function UpdateProfile({ show, onHide }) {
     };
 
     const handleUploadClick = () => {
-        // Trigger click on hidden file input element
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
@@ -66,28 +56,29 @@ function UpdateProfile({ show, onHide }) {
 
             const jsonData = {
                 user_id: user_id,
-                user_username: userNameLabel, // Retain old username
-                user_fullname: userFullNameLabel, // Retain old fullname
-                user_password: userPasswordLabel, // Retain old password
-                user_profile_picture: user_profile_image, // Retain old profile picture
+                user_profile_picture: profilePicture,
             };
 
+            console.log("jsonData: ", jsonData);
+
             // Update fields that have been changed
-            if (userName !== '' && userName !== localStorage.getItem("user_username")) jsonData.user_username = userName;
-            if (userFullname !== '' && userFullname !== localStorage.getItem("user_fullname")) jsonData.user_fullname = userFullname;
-            if (userPassword !== '' && userPassword !== localStorage.getItem("user_password")) jsonData.user_password = userPassword;
-            if (userImage !== null) jsonData.user_profile_picture = userImage;
+            // if (userName !== '' && userName !== localStorage.getItem("user_username")) jsonData.user_username = userName;
+            // if (userFullname !== '' && userFullname !== localStorage.getItem("user_fullname")) jsonData.user_fullname = userFullname;
+            // if (userPassword !== '' && userPassword !== localStorage.getItem("user_password")) jsonData.user_password = userPassword;
+            // if (userImage !== null) jsonData.user_profile_picture = userImage;
 
             const formData = new FormData();
             formData.append("json", JSON.stringify(jsonData));
-            formData.append("operation", "updateProfile");
-            formData.append('file', userImage !== null ? userImage : "");
+            formData.append("operation", "updateProfilePicture");
+            formData.append('file', userImage !== null ? userImage : profilePicture);
 
             const res = await axios.post(url, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+
+            console.log("res update", res.data);
 
             if (res.data === 2) {
                 toast.error("You cannot Upload files of this type!");
@@ -96,9 +87,11 @@ function UpdateProfile({ show, onHide }) {
             } else if (res.data === 4) {
                 toast.error("Your file is too big (25mb maximum)!");
             } else if (res.data === 1) {
+                localStorage.setItem("user_profile_picture", profilePicture);
                 toast.success("Profile updated successfully!");
                 setTimeout(() => {
-                    window.location.reload();
+                    // window.location.reload();
+                    onHide();
                 }, 1500);
                 // alert('You need to login again to see the changes');
                 // navigateTo("/");
@@ -141,23 +134,14 @@ function UpdateProfile({ show, onHide }) {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [onHide]);
+    }, [onHide, profilePicture]);
 
     useEffect(() => {
 
-        if (profilePicture !== null && userFullNameLabel !== "") {
+        if (profilePicture !== null) {
             setProfilePicture(profilePicture.replace(/"/g, ""));
-            setUserFullNameLabel(userFullNameLabel.replace(/"/g, ""));
-            setUserNameLabel(userNameLabel.replace(/"/g, ""));
-            setUserPasswordLabel(userPasswordLabel.replace(/"/g, ""));
-        } else {
-            setProfilePicture("");
-            setUserFullNameLabel("");
-            setUserNameLabel("");
-            setUserPasswordLabel("");
         }
-        // getProfilePicture();
-    }, [profilePicture, userFullNameLabel, userNameLabel, userPasswordLabel]);
+    }, [profilePicture]);
 
     const handleCameraClick = () => {
         setShowCameraModal(true);
@@ -181,38 +165,9 @@ function UpdateProfile({ show, onHide }) {
                             <div>
                                 <Card>
                                     <Card.Body>
-                                        <Form noValidate validated={validated}>
+                                        <Form noValidate validated={validated} onSubmit={handleSubmit}>
                                             <Form.Group>
                                                 <Container>
-                                                    <FloatingLabel label={userNameLabel}>
-                                                        <Form.Control
-                                                            type="text"
-                                                            placeholder="Username"
-                                                            value={userName}
-                                                            onChange={(e) => setUsername(e.target.value)}
-                                                            required
-                                                        />
-                                                    </FloatingLabel>
-                                                    <br />
-                                                    <FloatingLabel label={userFullNameLabel}>
-                                                        <Form.Control
-                                                            type="text"
-                                                            placeholder="Fullname"
-                                                            value={userFullname}
-                                                            onChange={(e) => setUserFullname(e.target.value)}
-                                                            required
-                                                        />
-                                                    </FloatingLabel>
-                                                    <br />
-                                                    <FloatingLabel label="Password">
-                                                        <Form.Control
-                                                            type="password"
-                                                            placeholder="Password"
-                                                            value={userPassword}
-                                                            onChange={(e) => setUserPassword(e.target.value)}
-                                                            required
-                                                        />
-                                                    </FloatingLabel>
                                                     <br />
                                                     {imageSelected ? (
                                                         <Image
@@ -250,7 +205,7 @@ function UpdateProfile({ show, onHide }) {
                                                     </FloatingLabel>
                                                     {/* <Button ref={fileInputRef} onChange={(e) => setUserImage(e.target.files[0])}>Choose Profile Picture</Button> */}
                                                     <div className='text-center'>
-                                                        <Button className='w-44 bg-black text-white mt-3' onClick={handleSubmit}>Save</Button>
+                                                        <Button type='submit' className='w-44 bg-black text-white mt-3'>Save</Button>
                                                     </div>
                                                 </Container>
                                             </Form.Group>
@@ -261,7 +216,7 @@ function UpdateProfile({ show, onHide }) {
                         </Modal.Body>
                     </div>
                 </Modal>)}
-            <CameraModals show={showCameraModal} onHide={() => setShowCameraModal(false)} compId="YOUR_COMP_ID_HERE" />
+            <TakePicture show={showCameraModal} onHide={() => setShowCameraModal(false)} />
         </>
     )
 }

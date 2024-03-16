@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import axios from "axios";
 import { Container } from 'react-bootstrap'
-// import CommentModal from '../modals/CommentModal';
 import secureLocalStorage from 'react-secure-storage';
 import LoadingSpinner from '../components/LoadingSpinner';
 import UserPost from '../components/UserPost';
-// import { CiImageOn } from "react-icons/ci";
-// import Navigators from '../components/Navigators'
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
     const [post, setPost] = useState([]);
-    // const [userId, setUserId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    // const [showModal, setShowModal] = useState(false);
 
+    const navigateTo = useNavigate();
 
     const getAllPost = async () => {
         setIsLoading(true);
@@ -34,8 +31,13 @@ function Home() {
         }
     }
     useEffect(() => {
-        getAllPost();
-    }, []);
+        if (localStorage.getItem("isLoggedIn") !== "true") {
+            navigateTo("/");
+        } else {
+            getAllPost();
+
+        }
+    }, [navigateTo])
 
 
     return (
@@ -46,17 +48,14 @@ function Home() {
                 ) : (
                     <>
                         {post === null && <div className='text-center'><b>No Profile Yet</b></div>}
+                        <div><h1 className='text-white text-center'>RANTS</h1></div>
                         {post && post.map((posts, index) => (
                             <div key={index}>
                                 <Container>
                                     <UserPost userProfile={posts} />
                                 </Container>
-                                {/* <div className='text-center flex items-center justify-center text-black'>
-                                    <div className='w-1/2 border-t border-black mt-5'></div>
-                                </div> */}
                             </div>
                         ))}
-                        {/* <CommentModal show={showModal} onHide={() => setShowModal(false)} /> */}
                     </>
                 )}
             </div>

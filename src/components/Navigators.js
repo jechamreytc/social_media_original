@@ -3,74 +3,59 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 import { BiHomeAlt2 } from "react-icons/bi";
 import { CiSearch } from "react-icons/ci";
 import { IoCreateOutline } from "react-icons/io5";
-import { CiHeart } from "react-icons/ci";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import { RxPerson } from "react-icons/rx";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CreateUserPost from '../Timeline/CreateUserPost';
-function Navigators() {
-    // const location = useLocation();
-    // const currentPath = location.pathname;
-    const [showModal, setShowModal] = useState(false); // State variable to manage modal visibility
+import SearchModal from '../modals/SearchModal';
 
+function Navigators() {
+    const [showModal, setShowModal] = useState(false);
+    const [showSearchModal, setShowSearchModal] = useState(false);
+    const navigateTo = useNavigate();
+
+    // handle logout erase all local storage
     const handleLogout = () => {
-        // Loop through all keys in localStorage
         for (var i = 0; i < localStorage.length; i++) {
             var key = localStorage.key(i);
-            // Remove each key
             localStorage.removeItem(key);
         }
         localStorage.removeItem('user_profile_picture');
         localStorage.removeItem('user_fullname');
-
+        navigateTo("/");
     }
-    const handleModalToggle = () => setShowModal(!showModal);
+    // open create post modal
+    const handleOpenCreatePost = () => {
+        setShowModal(true);
+    }
+    const handleSearchModalToggle = () => {
+        setShowSearchModal(!showSearchModal);
+    }
+    const handleGoToProfile = () => {
+        navigateTo("/profile", { state: { user_id: localStorage.getItem("user_id") } })
+    }
 
-    
     return (
         <>
-            <div className='text-center' >
-                <div className="flex justify-center items-center bg-body-tertiary bg">
-                    <Navbar expand="lg" >
-                        <Container>
-                            {/* Navbar Brand */}
-                            {/* <Navbar.Brand href="/home">Rants</Navbar.Brand> */}
-
-                            {/* Navbar Collapse */}
-                            {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
-                            <Navbar.Collapse id="basic-navbar-nav">
-                                <Nav className="">
-                                    {/* Your Nav Links */}
-                                    <CustomLink to="/home"><BiHomeAlt2 className="size-8 text-black" /></CustomLink>
-                                    <CustomLink to="/search"><CiSearch className="size-8 text-black" /></CustomLink>
-                                    <CustomLink onClick={handleModalToggle}><IoCreateOutline className="size-8 text-black" /></CustomLink>
-                                    <CustomLink to="/like"><CiHeart className="size-8 text-black" /></CustomLink>
-                                    <CustomLink to="/profile"><RxPerson className="size-8 text-black" /></CustomLink>
-                                    <CustomLink to="/"><RiLogoutCircleLine className='size-8 text-black' onClick={handleLogout} /></CustomLink>
-                                </Nav>
-                            </Navbar.Collapse>
-                        </Container>
-                    </Navbar>
-                    <CreateUserPost show={showModal} onHide={() => setShowModal(false)} />
-                </div>
+            <div className='bg-black' style={{ position: 'fixed', width: '100%', top: 0, zIndex: 1000 }}>
+                <Navbar className='bg-black'>
+                    <Container>
+                        <Nav className="mx-auto gap-3"> {/* Centered navigation links with gap */}
+                            <Nav.Link href="/home"><BiHomeAlt2 className='size-9 text-white cursor-pointer' /></Nav.Link>
+                            <Nav.Link onClick={handleSearchModalToggle}><CiSearch className='size-9 text-white cursor-pointer' /></Nav.Link>
+                            <Nav.Link onClick={handleOpenCreatePost}><IoCreateOutline className='size-9 text-white cursor-pointer' /></Nav.Link>
+                            <Nav.Link href="/profile" onClick={handleGoToProfile}><RxPerson className='size-9 text-white cursor-pointer' /></Nav.Link>
+                        </Nav>
+                        <Nav>
+                            <Nav.Link onClick={handleLogout}><RiLogoutCircleLine className='size-9 text-white cursor-pointer' /></Nav.Link>
+                        </Nav>
+                    </Container>
+                </Navbar>
+                <CreateUserPost show={showModal} onHide={() => setShowModal(false)} />
+                <SearchModal show={showSearchModal} onHide={() => setShowSearchModal(false)} />
             </div>
-
         </>
-
-    )
-}
-
-function CustomLink({ to, children, ...props }) {
-    // const path = window.location.pathname
-    // const resolvedPAth = useResolvedPath(to)
-    // const isActive = useMatch({ path: resolvedPAth.pathname, end: true })
-    return (
-        <Nav>
-            <Link className='ml-10' to={to} {...props}>{children}</Link>
-        </Nav>
-
     )
 }
 
 export default Navigators
-
