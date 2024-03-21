@@ -22,7 +22,7 @@ function SearchModal({ show, onHide }) {
             formData.append("json", JSON.stringify(jsonData));
             formData.append("operation", "searchUser");
             const res = await axios.post(url, formData);
-            console.log("res.data sa search: ", JSON.stringify(res.data));
+            // console.log("res.data sa search: ", JSON.stringify(res.data));
             if (res.data !== 0) {
                 setSearchResults(res.data); // Set search results
             } else {
@@ -35,6 +35,7 @@ function SearchModal({ show, onHide }) {
 
     const handleOnHide = () => {
         onHide();
+        setUserFullName('');
     };
 
     useEffect(() => {

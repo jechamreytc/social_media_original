@@ -1,4 +1,4 @@
-import { React, useState } from 'react'
+import React, { useState } from 'react';
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { BiHomeAlt2 } from "react-icons/bi";
 import { CiSearch } from "react-icons/ci";
@@ -8,14 +8,32 @@ import { RxPerson } from "react-icons/rx";
 import { useNavigate } from 'react-router-dom';
 import CreateUserPost from '../Timeline/CreateUserPost';
 import SearchModal from '../modals/SearchModal';
+import LogoutModal from '../modals/LogoutModal';
 
 function Navigators() {
     const [showModal, setShowModal] = useState(false);
     const [showSearchModal, setShowSearchModal] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
     const navigateTo = useNavigate();
 
-    // handle logout erase all local storage
+    // open create post modal
+    const handleOpenCreatePost = () => {
+        setShowModal(true);
+    }
+
+    const handleSearchModalToggle = () => {
+        setShowSearchModal(!showSearchModal);
+    }
+
+    const handleGoToProfile = () => {
+        navigateTo("/profile", { state: { user_id: localStorage.getItem("user_id") } });
+    }
+
     const handleLogout = () => {
+        setShowLogoutModal(true);
+    }
+
+    const confirmLogout = () => {
         for (var i = 0; i < localStorage.length; i++) {
             var key = localStorage.key(i);
             localStorage.removeItem(key);
@@ -23,16 +41,6 @@ function Navigators() {
         localStorage.removeItem('user_profile_picture');
         localStorage.removeItem('user_fullname');
         navigateTo("/");
-    }
-    // open create post modal
-    const handleOpenCreatePost = () => {
-        setShowModal(true);
-    }
-    const handleSearchModalToggle = () => {
-        setShowSearchModal(!showSearchModal);
-    }
-    const handleGoToProfile = () => {
-        navigateTo("/profile", { state: { user_id: localStorage.getItem("user_id") } })
     }
 
     return (
@@ -53,9 +61,10 @@ function Navigators() {
                 </Navbar>
                 <CreateUserPost show={showModal} onHide={() => setShowModal(false)} />
                 <SearchModal show={showSearchModal} onHide={() => setShowSearchModal(false)} />
+                <LogoutModal show={showLogoutModal} onHide={() => setShowLogoutModal(false)} confirmLogout={confirmLogout} />
             </div>
         </>
     )
 }
 
-export default Navigators
+export default Navigators;

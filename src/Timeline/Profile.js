@@ -11,6 +11,7 @@ import { RiLogoutCircleLine } from "react-icons/ri";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import UpdatePersonalProfile from '../modals/UpdatePersonalProfile';
 import { toast } from 'sonner';
+import LogoutModal from '../modals/LogoutModal';
 
 function Profile() {
   // const location = useLocation();
@@ -21,6 +22,7 @@ function Profile() {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showUpdatePersonalModal, setShowUpdatePersonalModal] = useState(false);
   const [userDetails, setUserDetails] = useState([]);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [profilePicture, setProfilePicture] = useState(localStorage.getItem("user_profile_picture"));
   const [userFullName, setUserFullName] = useState(localStorage.getItem("user_fullname"));
   const location = useLocation();
@@ -29,6 +31,10 @@ function Profile() {
   // const user_id_profile = location.state.user_id;
 
   const handleLogout = () => {
+    setShowLogoutModal(true); // Show LogoutModal when logout button is clicked
+  }
+
+  const confirmLogout = () => {
     // Loop through all keys in localStorage
     for (var i = 0; i < localStorage.length; i++) {
       var key = localStorage.key(i);
@@ -37,9 +43,7 @@ function Profile() {
     }
     localStorage.removeItem('user_profile_picture');
     localStorage.removeItem('user_fullname');
-
     navigateTo("/");
-
   }
 
   const hideUpdateModal = async () => {
@@ -141,7 +145,10 @@ function Profile() {
       <div className='text-center bg-black' style={{ position: 'fixed', width: '100%', top: 0, zIndex: 1000 }}>
         <Navbar className="bg-black">
           <Container>
-            <Navbar.Brand href="/home"><IoMdArrowRoundBack className='size-9 text-white' /></Navbar.Brand>
+            <div className='flex'>
+              <Navbar.Brand href="/home"><IoMdArrowRoundBack className='size-9 text-white' /></Navbar.Brand>
+              <h6 className='mt-2 text-white'>Back Home</h6>
+            </div>
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
               <RiLogoutCircleLine className='size-9 text-white cursor-pointer' onClick={handleLogout} />
@@ -151,7 +158,7 @@ function Profile() {
       </div>
       <br />
       <div>
-        <div className='text-center mt-5'>
+        <div className='text-center mt-5 '>
           <Image
             style={{
               maxWidth: 200,
@@ -182,20 +189,24 @@ function Profile() {
             </>
           )}
         </div>
-        {isLoading && <LoadingSpinner />}
-        {post.length > 0 && (
-          <div>
-            {post === null && <div className='text-center'><b>Empty Timeline</b></div>}
-            {post.map((individualPost, index) => (
-              <div key={index}>
-                <UserPost userProfile={individualPost} />
-              </div>
-            ))}
-          </div>
-        )}
+        <div className='bg-black'>
+          {isLoading && <LoadingSpinner />}
+          {post.length > 0 ? (
+            <div>
+              {post.map((individualPost, index) => (
+                <div key={index}>
+                  <UserPost userProfile={individualPost} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className='text-center text-white mt-40'><b>{post === null ? 'Empty Timeline' : 'No Post Yet'}</b></div>
+          )}
+        </div>
         <CommentModal show={showModal} onHide={() => setShowModal(false)} />
         <UpdateProfile show={showUpdateModal} onHide={hideUpdateModal} />
         <UpdatePersonalProfile show={showUpdatePersonalModal} onHide={hideUpdatePersonalModal} />
+        <LogoutModal show={showLogoutModal} onHide={() => setShowLogoutModal(false)} confirmLogout={confirmLogout} />
       </div>
     </>
   );

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from "react-router-dom"
 import axios from 'axios';
 import { Container, FloatingLabel, Form, Button, Card } from 'react-bootstrap';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import secureLocalStorage from 'react-secure-storage';
 import './styles.css';
 
@@ -26,29 +26,54 @@ function SignUp() {
 
         try {
             const response = await axios.post(url, formData);
-            console.log("User registered successfully:", response.data);
+            // console.log("User registered successfully:", response.data);
+            if (response.data === 1) {
+                toast.success('Successfully Registered');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            }else if(response.data === -1){
+                toast.error('User already exists');
+            }else{
+                toast.error('Something went wrong');
+            }
         } catch (error) {
             console.error("Error registering user:", error);
         }
     };
 
     const handleSubmit = (e) => {
+
+        const form = e.currentTarget;
         e.preventDefault();
         e.stopPropagation();
-        const form = e.currentTarget;
-        setValidated(true);
-
-        if (!form.checkValidity()) {
-            alert("Successfully Registered");
-            return;
-        }
-
         if (password.length < 8) {
-            toast.error('Password must be at least 8 characters');
-            return;
+            toast.error('Password must be at least 5 characters');
+        } else if (!form.checkValidity()) {
+            toast.error('Please fill out the form correctly');
+        } else {
+            registerUser();
         }
+        setValidated(true);
+        // e.preventDefault();
+        // e.stopPropagation();
+        // const form = e.currentTarget;
+        // setValidated(true);
 
-        registerUser();
+        // if (password.length < 8) {
+        //     toast.error('Password must be at least 8 characters');
+        //     return;
+        // }
+
+        // if (!form.checkValidity()) {
+        //     alert("Successfully Registered");
+        // } else {
+        //     registerUser();
+        // }
+
+
+
+
     };
 
 
@@ -86,7 +111,7 @@ function SignUp() {
                         <div className=''>
                             <FloatingLabel label='Enter Password' className='mt-3'>
                                 <Form.Control
-                                    type='password' // Change type to password
+                                    type='password'
                                     placeholder=''
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
@@ -95,7 +120,7 @@ function SignUp() {
                             </FloatingLabel>
                         </div>
                         <div className='text-center'>
-                            <Button className='w-44 bg-white text-black mt-3' onClick={registerUser}>Sign Up</Button>
+                            <Button type='submit' className='w-44 bg-white text-black mt-3' >Sign Up</Button>
                             <div className='mt-3'>
                                 <Link to="/">Already have an account</Link>
                             </div>

@@ -122,19 +122,19 @@ function UpdateProfile({ show, onHide }) {
 
     };
 
-    const modalRef = useRef(null);
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
-                onHide();
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
+    // const modalRef = useRef(null);
+    // useEffect(() => {
+    //     const handleClickOutside = (event) => {
+    //         if (modalRef.current && !modalRef.current.contains(event.target)) {
+    //             onHide();
+    //         }
+    //     };
+    //     document.addEventListener('mousedown', handleClickOutside);
 
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [onHide, profilePicture]);
+    //     return () => {
+    //         document.removeEventListener('mousedown', handleClickOutside);
+    //     };
+    // }, [onHide, profilePicture]);
 
     useEffect(() => {
 
@@ -155,7 +155,7 @@ function UpdateProfile({ show, onHide }) {
                     backdrop="static"
                     keyboard={false}
                 >
-                    <div ref={modalRef}>
+                    <div>
                         <Modal.Header closeButton>
                             <div className='ml-44'>
                                 <Modal.Title>Update Profile</Modal.Title>

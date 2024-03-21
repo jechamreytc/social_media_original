@@ -5,7 +5,7 @@ import secureLocalStorage from 'react-secure-storage';
 import Webcam from 'react-webcam';
 import { toast } from 'sonner';
 
-function TakePicture({ show, onHide }) {
+function PostUsingCamera({ show, onHide }) {
     // const [commentText, setCommentText] = useState("");
     const webcamRef = useRef(null);
     const [capturedImage, setCapturedImage] = useState(null);
@@ -13,6 +13,8 @@ function TakePicture({ show, onHide }) {
     const [videoConstraints, setVideoConstraints] = useState({
         facingMode: 'user',
     });
+    const [description, setDescription] = useState('');
+    const [image, setImage] = useState(null);
 
     const handleCaptureSubmit = async () => {
         setIsLoading(true);
@@ -20,7 +22,9 @@ function TakePicture({ show, onHide }) {
             const url = secureLocalStorage.getItem("url") + "login.php";
             const user_id = localStorage.getItem("user_id");
             const jsonData = {
-                user_id: user_id,
+                post_user_id: user_id,
+                post_description: description,
+                post_image: image,
             };
 
             const formData = new FormData();
@@ -45,7 +49,7 @@ function TakePicture({ show, onHide }) {
             });
             switch (res.data) {
                 case 1:
-                    toast.success("Picture Successfully Change", "Success!");
+                    toast.success("success", "Success!");
                     setTimeout(() => {
                         window.location.reload();
                     }, 1000);
@@ -91,10 +95,10 @@ function TakePicture({ show, onHide }) {
             <Modal
                 show={show}
                 onHide={onHide}
-                size="sm"
-                backdrop="static"
+                size="lg"
+                // backdrop="static"
             >
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>Take Picture</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -150,4 +154,4 @@ function TakePicture({ show, onHide }) {
     );
 }
 
-export default TakePicture
+export default PostUsingCamera

@@ -18,8 +18,10 @@ function Login() {
         const form = e.currentTarget;
         e.preventDefault();
         e.stopPropagation();
-        if (form.checkValidity()) {
-            alert(`Submitted Successfully!!`);
+        if (!form.checkValidity()) {
+            toast.success(`Submitted Successfully!!`);
+        }else{
+            login();
         }
         setValidated(true);
     }
@@ -40,7 +42,7 @@ function Login() {
             const res = await axios.post(url, formData);
             console.log("res.data_login: ", JSON.stringify(res.data));
             if (res.data !== 0) {
-                toast.success("Welcome back " + res.data.user_username + "!", { duration: 1200 });
+                toast.success("Welcome back " + res.data.user_fullname + "!", { duration: 1200 });
                 localStorage.setItem("isLoggedIn", "true");
                 localStorage.setItem("user_id", JSON.stringify(res.data.user_id));
                 localStorage.setItem("user_username", JSON.stringify(res.data.user_username));
@@ -65,7 +67,7 @@ function Login() {
                 navigateTo("/home");
                 console.log("Login ni: ", res.data);
             } else {
-                toast.error("Invalid credentials!");
+                toast.error("Wrong Username or Password!");
             }
         } catch (error) {
             toast.error("Network error!", {

@@ -3,6 +3,7 @@ import { Button, Card, Form, Container, Image } from 'react-bootstrap';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import { CiImageOn } from "react-icons/ci";
+// import { FaCamera } from "react-icons/fa";
 import { toast } from 'sonner';
 import secureLocalStorage from 'react-secure-storage';
 
@@ -79,7 +80,6 @@ function CreateUserPost({ show, onHide }) {
             } else if (res.data === 1) {
                 toast.success("Post created successfully!", {
                     autoClose: 3000,
-                    description: 'Wait for admin to approve your post',
                 });
                 setTimeout(() => {
                     window.location.reload();
@@ -169,7 +169,10 @@ function CreateUserPost({ show, onHide }) {
                                                         value={description}
                                                         onChange={(e) => setDescription(e.target.value)}
                                                     />
-                                                    <CiImageOn className='size-8' onClick={handleUploadClick} />
+                                                    <div className='flex'>
+                                                        <CiImageOn className='size-8' onClick={handleUploadClick} />
+                                                        {/* <FaCamera className='size-8' /> */}
+                                                    </div>
                                                     <input
                                                         type="file"
                                                         style={{ display: 'none' }}

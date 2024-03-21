@@ -74,6 +74,7 @@ function CommentModal({ show, onHide, post_id }) {
         const handleClickOutside = (event) => {
             if (modalRef.current && !modalRef.current.contains(event.target)) {
                 onHide();
+                window.location.reload();
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -107,7 +108,7 @@ function CommentModal({ show, onHide, post_id }) {
                                         <Form.Group>
                                             <Container>
                                                 <div className='flex gap-2 flex-wrap'>
-                                                    {comments.map((comment, index) => (
+                                                    {comments.slice(0, showAllComments ? comments.length : 3).map((comment, index) => (
                                                         <div key={index} className="w-full">
                                                             <div className='flex gap-3 w-full'>
                                                                 <Image
@@ -126,7 +127,7 @@ function CommentModal({ show, onHide, post_id }) {
                                             </Container>
                                         </Form.Group>
                                     </Form>
-                                    {!showAllComments && comments.length > 5 && (
+                                    {comments.length > 3 && !showAllComments && (
                                         <div className='text-center'>
                                             <Button className='bg-black text-white' onClick={() => setShowAllComments(true)}>Show More</Button>
                                         </div>

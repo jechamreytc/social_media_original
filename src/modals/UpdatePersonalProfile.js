@@ -4,6 +4,7 @@ import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import secureLocalStorage from 'react-secure-storage';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { toast } from 'sonner';
 
 
 function UpdatePersonalProfile({ show, onHide }) {
@@ -38,7 +39,8 @@ function UpdatePersonalProfile({ show, onHide }) {
             console.log("jsonData: ", jsonData);
 
             if (res.data !== 0) {
-                alert("Succesfully Updated");
+                toast.success("Succesfully Updated");
+                window.location.reload();
             }
         } catch (error) {
 

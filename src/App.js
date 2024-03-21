@@ -15,9 +15,12 @@ function App() {
     localStorage.setItem("url", "http://localhost/socialmedia/api/");
   }
 
+  console.warn("%cStop! Masisira buhay mo", "font-size: 75px; color: red;");
+
+
   return (
     <>
-      <div className='bg-black'>
+      <div className='bg-black vh-100'>
         <Toaster richColors position='top-center' duration={1500} />
         <Routes>
           <Route path='/' element={<Login />} />

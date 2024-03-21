@@ -110,10 +110,10 @@ function UserPost({ userProfile }) {
 
     return (
         <>
-            <div>
-                <div className=''>
-                    <Container>
-                        <Card className='mt-10 border-0 md:mx-96 bg-black'>
+            <div className='flex justify-center items-center'>
+                <div className='justify-center'>
+                    <Container className='justify-center'>
+                        <Card className='mt-10 border-0 md:auto bg-black'>
                             <div className='flex gap-3'>
                                 {userProfile.user_profile_picture !== "" && (
                                     <div className='justify-center'>
@@ -149,7 +149,7 @@ function UserPost({ userProfile }) {
                                                     }
                                                 </p>
                                                 {!showFullDescription && userProfile.post_description.length > 250 && (
-                                                    <button className="text-blue-500 hover:underline" onClick={handleShowMore}>Show More</button>
+                                                    <button className="text-white hover:underline" onClick={handleShowMore}>Show More</button>
                                                 )}
                                             </div>
                                         </div>
@@ -157,7 +157,7 @@ function UserPost({ userProfile }) {
                                     {userProfile.post_image !== "" && (
                                         <div className='flex justify-center'>
                                             <Image
-                                                style={{ maxWidth: 400, maxHeight: 500, minHeight: 100, minWidth: 50 }}
+                                                style={{ maxWidth: 300, maxHeight: 400, minHeight: 100, minWidth: 50 }}
                                                 className='w-full mb-5'
                                                 src={secureLocalStorage.getItem("url") + "images/" + userProfile.post_image}
                                                 rounded
@@ -183,7 +183,7 @@ function UserPost({ userProfile }) {
                         </Card>
                     </Container>
                     <div className='text-center flex items-center justify-center text-white'>
-                        <div className='w-1/2 border-t border-white mt-5'></div>
+                        <div className='border-t border-white mt-5' style={{ width: '100%' }}></div>
                     </div>
                 </div>
                 <CommentModal show={showModal} onHide={() => setShowModal(false)} post_id={userProfile.post_id} />

@@ -7,7 +7,7 @@ import CreateUserPost from './Timeline/CreateUserPost'
 
 function MainLayout() {
     return (
-        <div className=''>
+        <div className='vh-100'>
             <Navigators />
             <Routes>
                 <Route path='/home' element={<Home />} />

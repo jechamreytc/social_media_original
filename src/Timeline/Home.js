@@ -19,7 +19,7 @@ function Home() {
             const formData = new FormData();
             formData.append("operation", "getAllPost");
             const res = await axios.post(url, formData);
-            console.log("res.data sa home: ", JSON.stringify(res.data));
+            // console.log("res.data sa home: ", JSON.stringify(res.data));
             if (res.data !== 0) {
                 setPost(res.data);
             }
@@ -42,12 +42,14 @@ function Home() {
 
     return (
         <>
-            <div>
+            <div className='bg-black'>
                 {isLoading ? (
                     <LoadingSpinner />
                 ) : (
                     <>
-                        {post === null && <div className='text-center'><b>No Profile Yet</b></div>}
+                        {(post === null || post.length === 0) && (
+                            <div className='text-center mt-40'><b>No Post Yet</b></div>
+                        )}
                         <div><h1 className='text-white text-center'>RANTS</h1></div>
                         {post && post.map((posts, index) => (
                             <div key={index}>
